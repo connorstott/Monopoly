@@ -84,7 +84,7 @@ class Player():
 		return double
 	
 	def move(self) -> None:
-		for i in range(1, self.dice_total+1):
+		for _ in range(1, self.dice_total+1):
 			self.position += 1
 			if self.position == len(board): 
 				self.passGo()
@@ -198,14 +198,15 @@ class ColourTypes(Enum):
 
 def colourTypeToBack(colour: ColourTypes) -> str:
 	"""returns the back colour as a string"""
-	if colour == ColourTypes.BROWN: return Back.YELLOW
-	elif colour == ColourTypes.LIGHTBLUE: return Back.LIGHTBLUE_EX
-	elif colour == ColourTypes.PINK: return Back.LIGHTRED_EX
-	elif colour == ColourTypes.ORANGE: return Back.LIGHTMAGENTA_EX
-	elif colour == ColourTypes.RED: return Back.RED
-	elif colour == ColourTypes.YELLOW: return Back.LIGHTYELLOW_EX
-	elif colour == ColourTypes.GREEN: return Back.GREEN
-	elif colour == ColourTypes.DARKBLUE: return Back.BLUE
+	colour_backs = {ColourTypes.BROWN: Back.YELLOW, 
+									ColourTypes.LIGHTBLUE: Back.LIGHTBLUE_EX, 
+									ColourTypes.PINK: Back.LIGHTRED_EX, 
+									ColourTypes.ORANGE: Back.LIGHTMAGENTA_EX, 
+									ColourTypes.RED: Back.RED, 
+									ColourTypes.YELLOW: Back.LIGHTYELLOW_EX, 
+									ColourTypes.GREEN: Back.GREEN, 
+									ColourTypes.DARKBLUE: Back.BLUE}
+	return colour_backs[colour]
 
 class Property():
 	def __init__(self, name: str, position: int, colour: ColourTypes, 
@@ -508,7 +509,7 @@ def enterPlayer(player_list, used_characters, player_num = None) -> str:
 
 def pickPlayer(player_list) -> int:
 	"""displays a list of players and their letters to choose from. if an invalid choice is sent return None"""
-	[print(f"[player {i+1}] '{player_list[i].letter}'") for i in range(len(player_list))]
+	[print(f"[player {i+1}] '{player.letter}'") for i, player in enumerate(player_list)]
 
 	player_num = input("\nplayer number : ")
 	if player_num.isnumeric() and 1 <= int(player_num) <= len(player_list):
@@ -584,7 +585,7 @@ def main():
 	go_to_jail = GoToJail()
 	income_tax = TaxPlace("income", 4, 200)
 	super_tax = TaxPlace("super", 38, 100)
-	for i in [go, jail, free_parking, go_to_jail, income_tax, super_tax]: board[i.position] = i
+	for place in [go, jail, free_parking, go_to_jail, income_tax, super_tax]: board[place.position] = place
 
 	player_list = createPlayers()
 	#player_list = [Player("a"), Player("b")]
