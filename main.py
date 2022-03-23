@@ -480,7 +480,7 @@ def makeChanceCards(player_list: list):
 	cc2 = AdvanceCard(24, "Trafalgar Square", collect_go=True)
 	cc3 = AdvanceCard(39, "Mayfair")
 	cc4 = AdvanceCard(11, "Pall Mall", collect_go=True)
-	cc8 = collectCard("Dank pays you dividend", 50)
+	cc8 = collectCard("Bank pays you dividend", 50)
 	cc11 = jailCard()
 	cc13 = payCard("Speeding fine", 15)
 	cc14 = AdvanceCard(5, "Kings Cross Station", collect_go=True)
