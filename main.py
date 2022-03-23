@@ -422,6 +422,27 @@ class collectPlayersCard(Card):
 			self.player.giveMoney(self.collect_amount)
 		self.player_list.append(self.player)
 
+class AdvanceCard(Card):
+	"""advances player to specified place"""
+	def __init__(self, jump_position: int, jump_name: str, collect_go: bool = False):
+		description = f"Advance to {Back.BLACK + Style.BRIGHT+ jump_name + Style.RESET_ALL}"
+		if collect_go:
+			description += f". If you pass Go, collect {Fore.GREEN}£200{Fore.RESET}"
+		super().__init__(description)
+		self.jump_position = jump_position
+		self.collect_go = collect_go
+
+	def actions(self) -> None:
+		"""logic for when player gets card"""
+		if self.collect_go and self.player.position > self.jump_position:
+			print(f"\nYou passed go! Collecting {Fore.GREEN}£200{Fore.RESET}")
+			self.player.giveMoney(200, True)
+
+		self.player.position = self.jump_position
+		self.player.enterPrompt("arrive")
+		self.player.standingInfo()
+		self.player.standingAction()
+
 def makeCommunityChests(player_list: list):
 	player_list = player_list.copy()
 	cc1 = goCard()
@@ -456,12 +477,16 @@ class CommunityChestManager():
 def makeChanceCards(player_list: list):
 	player_list = player_list.copy()
 	cc1 = goCard()
+	cc2 = AdvanceCard(24, "Trafalgar Square", collect_go=True)
+	cc3 = AdvanceCard(39, "Mayfair")
+	cc4 = AdvanceCard(11, "Pall Mall", collect_go=True)
 	cc8 = collectCard("Dank pays you dividend", 50)
 	cc11 = jailCard()
 	cc13 = payCard("Speeding fine", 15)
+	cc14 = AdvanceCard(5, "Kings Cross Station", collect_go=True)
 	cc16 = collectCard("Your building loan matures", 150)
 
-	return [cc1, cc8, cc11, cc13, cc16]
+	return [cc1, cc2, cc3, cc4, cc8, cc11, cc13, cc14, cc16]
 
 class ChanceCardManager():
 	def __init__(self, position: int, chance_cards: list):
