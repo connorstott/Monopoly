@@ -46,7 +46,7 @@ class Player():
 			self.enterPrompt("roll the die")
 			double = self.diceRoll()
 			if escaped: double = False # can't do a double roll if you've escaped jail this turn
-			#self.dice_total = 17
+			self.dice_total = 7
 			#double = True
 			double_count += 1 if double else 0
 
@@ -181,6 +181,9 @@ class Player():
 		elif isinstance(place, CommunityChestManager):
 			place.getChest(self)
 
+		elif isinstance(place, ChanceCardManager):
+			place.getCard(self)
+
 		print("")
 		self.enterPrompt("finish turn")
 
@@ -244,7 +247,7 @@ def createProperties() -> list:
 	pr = Property("Pentonville Road", 9, ColourTypes.LIGHTBLUE, 120, 50, 8)
 	pm = Property("Pall Mall", 11, ColourTypes.PINK, 140, 100, 10)
 	w = Property("Whiteahall", 13, ColourTypes.PINK, 140, 100, 10)
-	na = Property("Northumberland Avenu", 14, ColourTypes.PINK, 160, 100, 12)
+	na = Property("Northumberland Avenue", 14, ColourTypes.PINK, 160, 100, 12)
 	bws = Property("Bow Street", 16, ColourTypes.ORANGE, 180, 100, 14)
 	ms = Property("Marlborough Street", 18, ColourTypes.ORANGE, 180, 100, 14)
 	vs = Property("Vine street", 19, ColourTypes.ORANGE, 200, 100, 16)
@@ -349,12 +352,12 @@ class GoToJail():
 	def __init__(self):
 		self.position = 30
 
-		self.crimes = ["committing tax fraud", "punching babies", "walking slowly in front of people", "shopping for NFTs", "unironically watching ben shapiro", "не подчиняясь Родине", "caring about elon musk", "using facebook", "simping for FNAF animatronics", "watching dreamSMP", "telling people the wordle answer", "thinking 'oh no our table is broken' is funny", "vacuuming after 1pm on a Sunday", "having a stash of over-the-counter decongestant pills that could be used to make methamphetamine", "doing nothing", "watching tommyinnit", "being a weeb", "agreeing with jordan peterson", "ne pas se rendre", "being a man with a podcast", "watching joe rogan", "not being an alpha female", "alienating the worker from the means of production", "hating silco", "carrying a plank of wood down the street"]
+		self.crimes = ["committing tax fraud", "punching babies", "walking slowly in front of people", "shopping for NFTs", "unironically watching ben shapiro", "не подчиняясь Родине", "caring about elon musk", "using facebook", "simping for FNAF animatronics", "watching dreamSMP", "telling people the wordle answer", "thinking 'oh no our table is broken' is funny", "vacuuming after 1pm on a Sunday", "having a stash of over-the-counter decongestant pills that could be used to make methamphetamine", "doing nothing", "watching tommyinnit", "being a weeb", "agreeing with jordan peterson", "ne pas se rendre", "being a man with a podcast", "watching joe rogan", "not being an alpha female", "alienating the worker from the means of production", "hating silco from arcane", "carrying a plank of wood down the street"]
 	
 	def standingInfo(self):
 		print(f"Uh oh! The police found you {Fore.RED+Back.BLACK}{random.choice(self.crimes)}{Style.RESET_ALL}! They have decided to put you in jail!")
 
-class CommunityChest():
+class Card():
 	def __init__(self, description: str):
 		self.description = description
 
@@ -364,9 +367,10 @@ class CommunityChest():
 		print("	" + self.description)
 		self.player = player
 
-		self.actions()
+		self.actions() # created in subclass
 	
-class goChest(CommunityChest):
+class goCard(Card):
+	"""card advances you to go and gives £200"""
 	def __init__(self):
 		description = f"Advance to go (Collect {Fore.GREEN}£200{Fore.RESET})"
 		super().__init__(description)
@@ -375,7 +379,8 @@ class goChest(CommunityChest):
 		self.player.position = 0
 		self.player.giveMoney(200, True)
 	
-class collectChest(CommunityChest):
+class collectCard(Card):
+	"""card gives you a specified amount of money"""
 	def __init__(self, description: str, collect_amount: int):
 		description = f"{description}. Collect {Fore.GREEN}£{collect_amount}{Fore.RESET}"
 		super().__init__(description)
@@ -384,7 +389,8 @@ class collectChest(CommunityChest):
 	def actions(self):
 		self.player.giveMoney(self.collect_amount, True)
 
-class payChest(CommunityChest):
+class payCard(Card):
+	"""card makes you pay a certain amount"""
 	def __init__(self, description: str, pay_amount: int):
 		description = f"{description}. Pay {Fore.RED}£{pay_amount}{Fore.RESET}\n"
 		super().__init__(description)
@@ -393,14 +399,16 @@ class payChest(CommunityChest):
 	def actions(self):
 		self.player.payMoney(self.pay_amount)
 
-class jailChest(CommunityChest):
+class jailCard(Card):
+	"""card sends you to jail"""
 	def __init__(self):
 		super().__init__(f"{Fore.RED} Go to jail. Go directly do jail, do not pass Go, do not collect £200{Fore.RESET}")
 	
 	def actions(self):
 		self.player.goToJail()
 
-class collectPlayersChest(CommunityChest):
+class collectPlayersCard(Card):
+	"""collect a certain amount of money from players"""
 	def __init__(self, player_list: list, description: str, collect_amount: int):
 		description = f"{description}. Collect {Fore.GREEN}£{collect_amount}{Fore.RESET} from every player"
 		super().__init__(description)
@@ -416,20 +424,20 @@ class collectPlayersChest(CommunityChest):
 
 def makeCommunityChests(player_list: list):
 	player_list = player_list.copy()
-	cc1 = goChest()
-	cc2 = collectChest("Bank error in your favour", 200)
-	cc3 = payChest("Doctor's fee", 50)
-	cc4 = collectChest("Stock sale", 50)
-	cc6 = jailChest()
-	cc7 = collectChest("Holiday fund matures", 100)
-	cc8 = collectChest("Income tax refund", 20)
-	cc9 = collectPlayersChest(player_list, "It's your birthday", 10)
-	cc10 = collectChest("Life insurance matures", 100)
-	cc11 = payChest("Pay hospital fees", 100)
-	cc12 = payChest("Pay school fees", 50)
-	cc13 = collectChest("Receive consultancy fee", 25)
-	cc15 = collectChest("You have won second prize in a beauty contest", 10)
-	cc16 = collectChest("You inherit £100", 100)
+	cc1 = goCard()
+	cc2 = collectCard("Bank error in your favour", 200)
+	cc3 = payCard("Doctor's fee", 50)
+	cc4 = collectCard("Stock sale", 50)
+	cc6 = jailCard()
+	cc7 = collectCard("Holiday fund matures", 100)
+	cc8 = collectCard("Income tax refund", 20)
+	cc9 = collectPlayersCard(player_list, "It's your birthday", 10)
+	cc10 = collectCard("Life insurance matures", 100)
+	cc11 = payCard("Pay hospital fees", 100)
+	cc12 = payCard("Pay school fees", 50)
+	cc13 = collectCard("Receive consultancy fee", 25)
+	cc15 = collectCard("You have won second prize in a beauty contest", 10)
+	cc16 = collectCard("You inherit £100", 100)
 
 	return [cc1,cc2, cc3, cc4, cc6, cc7, cc8, cc9, cc10, cc11, cc12, cc13, cc15, cc16]
 
@@ -444,6 +452,28 @@ class CommunityChestManager():
 	def getChest(self, player: object):
 		chest = random.choice(self.community_chests)
 		chest.play(player)
+
+def makeChanceCards(player_list: list):
+	player_list = player_list.copy()
+	cc1 = goCard()
+	cc8 = collectCard("Dank pays you dividend", 50)
+	cc11 = jailCard()
+	cc13 = payCard("Speeding fine", 15)
+	cc16 = collectCard("Your building loan matures", 150)
+
+	return [cc1, cc8, cc11, cc13, cc16]
+
+class ChanceCardManager():
+	def __init__(self, position: int, chance_cards: list):
+		self.position = position
+		self.chance_cards = chance_cards
+
+	def standingInfo(self) -> None:
+		print(f"{Back.LIGHTBLUE_EX+Fore.BLACK+Style.BRIGHT} You landed on a chance card! {Style.RESET_ALL}")
+
+	def getCard(self, player: Player):
+		card = random.choice(self.chance_cards)
+		card.play(player)
 
 class BoardDisplayer():
 	def __init__(self):
@@ -527,7 +557,7 @@ def createPlayers() -> list:
 		print(Back.WHITE + Style.BRIGHT + Fore.BLACK + f" {menu_state.upper()} " + Style.RESET_ALL + "\n")
 			
 		if menu_state == "main menu":
-			choice = input("[1] Enter another player\n[2] Edit a player's letter\n[3] Delete a player\n[4] Finish adding\n\n : ")
+			choice = input("[1] Add another player\n[2] Edit a player's letter\n[3] Delete a player\n[4] Finish adding\n\n : ")
 			if choice.isnumeric() and 1 <= int(choice) <= 4:
 				choice = int(choice)
 				if choice == 1: menu_state = "add player"
@@ -597,6 +627,12 @@ def main():
 	ccm1 = CommunityChestManager(2, community_chests)
 	ccm2 = CommunityChestManager(17, community_chests)
 	ccm3 = CommunityChestManager(33, community_chests)
+	for ccm in [ccm1, ccm2, ccm3]: board[ccm.position] = ccm
+
+	chance_cards = makeChanceCards(player_list)
+	ccm1 = ChanceCardManager(7, chance_cards)
+	ccm2 = ChanceCardManager(22, chance_cards)
+	ccm3 = ChanceCardManager(36, chance_cards)
 	for ccm in [ccm1, ccm2, ccm3]: board[ccm.position] = ccm
 	
 	# MAIN GAME LOOP
