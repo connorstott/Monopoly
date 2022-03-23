@@ -1,3 +1,4 @@
+4
 from colorama import Fore, Back, Style
 from enum import Enum, auto
 import random
@@ -46,12 +47,12 @@ class Player():
 			self.enterPrompt("roll the die")
 			double = self.diceRoll()
 			if escaped: double = False # can't do a double roll if you've escaped jail this turn
-			#self.dice_total = 7
+			#self.dice_total = 6
 			#double = True
 			double_count += 1 if double else 0
 
 			if double_count == 3:
-				print(f"{Fore.RED+Back.BLACK}You were going so fast that the police think you're botting, so sent you to jail.{Style.RESET_ALL}")
+				print(f"{Fore.RED+Back.BLACK}Oh no! You got 3 doubles in a row! You were going so fast that the police think you're botting, so sent you to jail.{Style.RESET_ALL}")
 				self.goToJail()
 				self.enterPrompt("go to jail")
 				return
@@ -149,7 +150,10 @@ class Player():
 	
 	def place_OtherOwned(self, place: object) -> bool:
 		"""returns whether another player owns the place"""
-		return True if place.owner != None and place.owner != self else False
+		return (place.owner != None and place.owner != self)
+
+	def place_Owned(self, place: object) -> bool:
+		return place.owner == self
 
 	def standingAction(self) -> None:
 		"""logic for when you land on a place (pay rent, buy it, nothing)"""
@@ -159,6 +163,8 @@ class Player():
 				self.buyPlace("Property")
 			elif self.place_OtherOwned(place):
 				self.payRent()
+			elif self.place_Owned(place):
+				self.ownedAction(place)
 
 		elif isinstance(place, Station):
 			if self.place_CanBuy(place):
@@ -186,6 +192,10 @@ class Player():
 
 		print("")
 		self.enterPrompt("finish turn")
+
+	def ownedAction(self, place: object) -> None:
+		"""gets player action when they land on a place they own"""
+		place.ownedAction()
 
 board = [None]*40
 
@@ -239,6 +249,14 @@ class Property():
 		print(f"{Style.BRIGHT}  HOUSE COST:  {Fore.BLUE}£{self.house_cost}{Style.RESET_ALL}")
 		print(f"{Style.BRIGHT}  HOTEL COST:  {Fore.BLUE}£{self.house_cost}{Style.RESET_ALL}\n")
 
+	def ownedAction(self) -> None:
+		"""gets player action when they land on the property"""
+		if self._houses < 4: print(f"[1] Buy house {Fore.RED}£{self.house_cost}{Fore.RESET} {self._houses}/4\n[e] exit")
+		elif self._houses == 4 and self.hotels == 0: print(f"[1] Buy house {Fore.RED}£{self.house_cost}{Fore.RESET} {self._houses}/4\n[2] Buy hotel {Fore.RED}£{self.hotel_cost}{Fore.RESET} {self._hotels}/1[e] exit")
+		else: print("[e] exit")
+
+		action = input("\n : ")
+
 def createProperties() -> list:
 	okr = Property("Old Kent Road", 1, ColourTypes.BROWN, 60, 50, 2)
 	wr = Property("Whitechapel Road", 3, ColourTypes.BROWN, 60, 50, 4)
@@ -288,7 +306,7 @@ def createStations() -> list:
 	kc = Station("King's Cross Station", 5)
 	m = Station("Marylebone Station", 15)
 	fs = Station("Fenchurch St. Station", 25)
-	ls = Station("Liverpool St. Station", 36)
+	ls = Station("Liverpool St. Station", 35)
 
 	return [ls, m, fs, kc]
 
