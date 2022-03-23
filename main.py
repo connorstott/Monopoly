@@ -46,7 +46,7 @@ class Player():
 			self.enterPrompt("roll the die")
 			double = self.diceRoll()
 			if escaped: double = False # can't do a double roll if you've escaped jail this turn
-			self.dice_total = 7
+			#self.dice_total = 7
 			#double = True
 			double_count += 1 if double else 0
 
