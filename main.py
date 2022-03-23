@@ -250,12 +250,28 @@ class Property():
 		print(f"{Style.BRIGHT}  HOTEL COST:  {Fore.BLUE}£{self.house_cost}{Style.RESET_ALL}\n")
 
 	def ownedAction(self) -> None:
-		"""gets player action when they land on the property"""
-		if self._houses < 4: print(f"[1] Buy house {Fore.RED}£{self.house_cost}{Fore.RESET} {self._houses}/4\n[e] exit")
-		elif self._houses == 4 and self.hotels == 0: print(f"[1] Buy house {Fore.RED}£{self.house_cost}{Fore.RESET} {self._houses}/4\n[2] Buy hotel {Fore.RED}£{self.hotel_cost}{Fore.RESET} {self._hotels}/1[e] exit")
-		else: print("[e] exit")
+		"""gets player action when they land on the property and own it"""
+		if self._houses < 4: print(f"[1] Buy house {Fore.RED}£{self.house_cost}{Fore.RESET} {self._houses}/4\n[e] exit\n")
+		elif self._houses == 4 and self.hotels == 0: print(f"[1] Buy house {Fore.RED}£{self.house_cost}{Fore.RESET} {self._houses}/4\n[2] Buy hotel {Fore.RED}£{self.hotel_cost}{Fore.RESET} {self._hotels}/1[e] exit\n")
+		else: print("[e] exit\n")
 
-		action = input("\n : ")
+		while True:
+			action = input(" : ")
+			
+			if action.lower().strip() == "e": 
+				break
+			if action == "1" and self._houses < 4:
+				self.owner.payMoney(self.house_cost)
+				self._houses += 1
+				self.rent += 10
+				print(f"New rent: {Fore.GREEN}£{self.rent}{Fore.RESET}")
+				break
+			if action == "2" and self._houses == 4 and self._hotels == 1:
+				self.owner.payMoney(self.hotel_cost)
+				self._hotels += 1
+				self.rent += 50
+				print(f"New rent: {Fore.GREEN}£{self.rent}{Fore.RESET}")
+				break
 
 def createProperties() -> list:
 	okr = Property("Old Kent Road", 1, ColourTypes.BROWN, 60, 50, 2)
@@ -370,7 +386,7 @@ class GoToJail():
 	def __init__(self):
 		self.position = 30
 
-		self.crimes = ["committing tax fraud", "punching babies", "walking slowly in front of people", "shopping for NFTs", "unironically watching ben shapiro", "не подчиняясь Родине", "caring about elon musk", "using facebook", "simping for FNAF animatronics", "watching dreamSMP", "telling people the wordle answer", "thinking 'oh no our table is broken' is funny", "vacuuming after 1pm on a Sunday", "having a stash of over-the-counter decongestant pills that could be used to make methamphetamine", "doing nothing", "watching tommyinnit", "being a weeb", "agreeing with jordan peterson", "ne pas se rendre", "being a man with a podcast", "watching joe rogan", "not being an alpha female", "alienating the worker from the means of production", "hating silco from arcane", "carrying a plank of wood down the street"]
+		self.crimes = ["committing tax fraud", "thinking python is bad", "walking slowly in front of people", "shopping for NFTs", "unironically watching ben shapiro", "не подчиняясь Родине", "caring about elon musk", "using facebook", "simping for FNAF animatronics", "watching dreamSMP", "telling people the wordle answer", "thinking 'oh no our table is broken' is funny", "vacuuming after 1pm on a Sunday", "having a stash of over-the-counter decongestant pills that could be used to make methamphetamine", "doing nothing", "watching tommyinnit", "agreeing with jordan peterson", "ne pas se rendre", "being a man with a podcast", "watching joe rogan", "not being a high-value alpha female", "alienating the worker from the means of production", "hating silco from arcane", "carrying a plank of wood down the street"]
 	
 	def standingInfo(self):
 		print(f"Uh oh! The police found you {Fore.RED+Back.BLACK}{random.choice(self.crimes)}{Style.RESET_ALL}! They have decided to put you in jail!")
