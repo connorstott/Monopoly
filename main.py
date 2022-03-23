@@ -1,4 +1,3 @@
-4
 from colorama import Fore, Back, Style
 from enum import Enum, auto
 import random
