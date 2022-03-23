@@ -285,10 +285,10 @@ class Station():
 		print(f"{Style.BRIGHT}  RENT:        {Fore.GREEN}£{self.rent}{Style.RESET_ALL}\n")
 
 def createStations() -> list:
-	ls = Station("Liverpool St. Station", 5)
+	kc = Station("King's Cross Station", 5)
 	m = Station("Marylebone Station", 15)
 	fs = Station("Fenchurch St. Station", 25)
-	kc = Station("King's Cross Station", 35)
+	ls = Station("Liverpool St. Station", 36)
 
 	return [ls, m, fs, kc]
 
