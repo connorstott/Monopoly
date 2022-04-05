@@ -1,4 +1,4 @@
-from colorama import Fore, Back, Style
+from connorama import Text, Back, Style
 from enum import Enum, auto
 import random
 import time
@@ -23,11 +23,11 @@ class Player():
 	
 	def payMoney(self, amount: int, show_text: bool = True):
 		self._total_money -= amount
-		if show_text: print(f"You have spent {Fore.RED}£{amount}{Fore.RESET}\nNew balance: {Fore.LIGHTYELLOW_EX}£{self._total_money}{Fore.RESET}")
+		if show_text: print(f"You have spent {Text.red}£{amount}{Text.RESET}\nNew balance: {Text.light_yellow}£{self._total_money}{Text.RESET}")
 	
 	def giveMoney(self, amount: int, show_text: bool = False):
 		self._total_money += amount
-		if show_text: print(f"\nNew balance: {Fore.LIGHTYELLOW_EX}£{self._total_money}{Fore.RESET}")
+		if show_text: print(f"\nNew balance: {Text.light_yellow}£{self._total_money}{Text.RESET}")
 
 	def turn(self) -> None:
 		double = True
@@ -51,7 +51,7 @@ class Player():
 			double_count += 1 if double else 0
 
 			if double_count == 3:
-				print(f"{Fore.RED+Back.BLACK}Oh no! You got 3 doubles in a row! You were going so fast that the police think you're botting, so sent you to jail.{Style.RESET_ALL}")
+				print(f"{Text.red+Back.black}Oh no! You got 3 doubles in a row! You were going so fast that the police think you're botting, so sent you to jail.{Style.RESET_ALL}")
 				self.goToJail()
 				self.enterPrompt("go to jail")
 				return
@@ -65,20 +65,20 @@ class Player():
 	
 	def printHeading(self) -> None:
 		self._board_displayer.printBoard()
-		print(f"\n{Back.WHITE+Style.BRIGHT+Fore.BLACK} PLAYER '{self.letter}' {Style.RESET_ALL} {Style.BRIGHT}Balance: {Fore.LIGHTYELLOW_EX}£{self.getTotalMoney()}{Style.RESET_ALL}\n")
+		print(f"\n{Back.white+Style.bold+Text.black} PLAYER '{self.letter}' {Style.RESET_ALL} {Style.bold}Balance: {Text.light_yellow}£{self.getTotalMoney()}{Style.RESET_ALL}\n")
 	
 	def enterPrompt(self, action: str) -> None:
-		input(f"press {Style.BRIGHT + Fore.YELLOW}[ENTER]{Style.RESET_ALL} to {action}: ")
+		input(f"press {Style.bold + Text.yellow}[ENTER]{Style.RESET_ALL} to {action}: ")
 
 	def diceRoll(self) -> bool:
 		"""makes+stores the dice total and returns if double"""
 		roll1, roll2 = random.randint(1,6), random.randint(1,6)
 		double = True if roll1 == roll2 else False
 		self.printHeading()
-		print(f"[{roll1}] [{roll2}]" if not double else f"[{roll1}] [{roll2}] {Fore.BLUE}DOUBLE!{Fore.RESET}")
+		print(f"[{roll1}] [{roll2}]" if not double else f"[{roll1}] [{roll2}] {Text.blue}DOUBLE!{Text.RESET}")
 
 		total_roll = roll1 + roll2
-		print(f"you rolled for {Style.BRIGHT + Fore.GREEN}{total_roll}{Style.RESET_ALL}!\n")
+		print(f"you rolled for {Style.bold + Text.green}{total_roll}{Style.RESET_ALL}!\n")
 
 		self.dice_total = total_roll
 		return double
@@ -94,7 +94,7 @@ class Player():
 	def passGo(self) -> None:
 		self.position = board[0].position
 		self.printHeading()
-		print(f"You passed go! Collecting {Fore.GREEN}£200{Fore.RESET}!\n")
+		print(f"You passed go! Collecting {Text.green}£200{Text.RESET}!\n")
 		self.giveMoney(200)
 		self.enterPrompt("continue moving")
 	
@@ -134,12 +134,12 @@ class Player():
 			board[self.position].owner = self
 	
 	def payRent(self) -> None:
-		print(f"Giving {Back.BLACK}'{board[self.position].owner.letter}'{Back.RESET} their rent.")
+		print(f"Giving {Back.black}'{board[self.position].owner.letter}'{Back.RESET} their rent.")
 		self.payMoney(board[self.position].rent)
 		board[self.position].owner.giveMoney(board[self.position].rent)
 	
 	def payUtilityRent(self) -> None:
-		print(f"Giving {Back.BLACK}'{board[self.position].owner.letter}'{Back.RESET} their rent.")
+		print(f"Giving {Back.black}'{board[self.position].owner.letter}'{Back.RESET} their rent.")
 		self.payMoney(self.dice_total * board[self.position].dice_multiplier)
 		board[self.position].owner.giveMoney(self.dice_total * board[self.position].dice_multiplier)
 	
@@ -210,14 +210,14 @@ class ColourTypes(Enum):
 
 def colourTypeToBack(colour: ColourTypes) -> str:
 	"""returns the back colour as a string"""
-	colour_backs = {ColourTypes.BROWN: Back.YELLOW, 
-									ColourTypes.LIGHTBLUE: Back.LIGHTBLUE_EX, 
-									ColourTypes.PINK: Back.LIGHTRED_EX, 
-									ColourTypes.ORANGE: Back.LIGHTMAGENTA_EX, 
-									ColourTypes.RED: Back.RED, 
-									ColourTypes.YELLOW: Back.LIGHTYELLOW_EX, 
-									ColourTypes.GREEN: Back.GREEN, 
-									ColourTypes.DARKBLUE: Back.BLUE}
+	colour_backs = {ColourTypes.BROWN: Back.yellow, 
+									ColourTypes.LIGHTBLUE: Back.light_blue, 
+									ColourTypes.PINK: Back.light_red, 
+									ColourTypes.ORANGE: Back.light_magenta, 
+									ColourTypes.RED: Back.red, 
+									ColourTypes.YELLOW: Back.light_yellow, 
+									ColourTypes.GREEN: Back.green, 
+									ColourTypes.DARKBLUE: Back.blue}
 	return colour_backs[colour]
 
 class Property():
@@ -238,20 +238,20 @@ class Property():
 	
 	def standingInfo(self) -> None:
 		"""displays the info of the property when a player stands on it"""
-		print(f"{colourTypeToBack(self.colour) + Style.BRIGHT + Fore.BLACK} You have arrived at: {self.name} {Style.RESET_ALL}")
+		print(f"{colourTypeToBack(self.colour) + Style.bold + Text.black} You have arrived at: {self.name} {Style.RESET_ALL}")
 		try: owner = self.owner.letter
 		except AttributeError: owner = "Nobody"
-		print(f"{Back.BLACK} owned by: '{owner}' {Style.RESET_ALL}\n")
+		print(f"{Back.black} owned by: '{owner}' {Style.RESET_ALL}\n")
 
-		print(f"{Style.BRIGHT}  PRICE:       {Fore.RED}£{self.cost}{Style.RESET_ALL}")
-		print(f"{Style.BRIGHT}  RENT:        {Fore.GREEN}£{self.rent}{Style.RESET_ALL}")
-		print(f"{Style.BRIGHT}  HOUSE COST:  {Fore.BLUE}£{self.house_cost}{Style.RESET_ALL}")
-		print(f"{Style.BRIGHT}  HOTEL COST:  {Fore.BLUE}£{self.house_cost}{Style.RESET_ALL}\n")
+		print(f"{Style.bold}  PRICE:       {Text.red}£{self.cost}{Style.RESET_ALL}")
+		print(f"{Style.bold}  RENT:        {Text.green}£{self.rent}{Style.RESET_ALL}")
+		print(f"{Style.bold}  HOUSE COST:  {Text.blue}£{self.house_cost}{Style.RESET_ALL}")
+		print(f"{Style.bold}  HOTEL COST:  {Text.blue}£{self.house_cost}{Style.RESET_ALL}\n")
 
 	def ownedAction(self) -> None:
 		"""gets player action when they land on the property and own it"""
-		if self._houses < 4: print(f"[1] Buy house {Fore.RED}£{self.house_cost}{Fore.RESET} {self._houses}/4\n[e] exit\n")
-		elif self._houses == 4 and self.hotels == 0: print(f"[1] Buy house {Fore.RED}£{self.house_cost}{Fore.RESET} {self._houses}/4\n[2] Buy hotel {Fore.RED}£{self.hotel_cost}{Fore.RESET} {self._hotels}/1[e] exit\n")
+		if self._houses < 4: print(f"[1] Buy house {Text.red}£{self.house_cost}{Text.RESET} {self._houses}/4\n[e] exit\n")
+		elif self._houses == 4 and self.hotels == 0: print(f"[1] Buy house {Text.red}£{self.house_cost}{Text.RESET} {self._houses}/4\n[2] Buy hotel {Text.red}£{self.hotel_cost}{Text.RESET} {self._hotels}/1[e] exit\n")
 		else: print("[e] exit\n")
 
 		while True:
@@ -263,13 +263,13 @@ class Property():
 				self.owner.payMoney(self.house_cost)
 				self._houses += 1
 				self.rent += 10
-				print(f"New rent: {Fore.GREEN}£{self.rent}{Fore.RESET}")
+				print(f"New rent: {Text.green}£{self.rent}{Text.RESET}")
 				break
 			if action == "2" and self._houses == 4 and self._hotels == 1:
 				self.owner.payMoney(self.hotel_cost)
 				self._hotels += 1
 				self.rent += 50
-				print(f"New rent: {Fore.GREEN}£{self.rent}{Fore.RESET}")
+				print(f"New rent: {Text.green}£{self.rent}{Text.RESET}")
 				break
 
 def createProperties() -> list:
@@ -309,13 +309,13 @@ class Station():
 		self.owner = None
 	
 	def standingInfo(self) -> None:
-		print(f"{Back.WHITE+Style.BRIGHT+Fore.BLACK} You have arrived at: {self.name} {Style.RESET_ALL}")
+		print(f"{Back.white+Style.bold+Text.black} You have arrived at: {self.name} {Style.RESET_ALL}")
 		try: owner = self.owner.letter
 		except AttributeError: owner = "Nobody"
-		print(f"{Back.BLACK} owned by: '{owner}' {Style.RESET_ALL}\n")
+		print(f"{Back.black} owned by: '{owner}' {Style.RESET_ALL}\n")
 
-		print(f"{Style.BRIGHT}  PRICE:       {Fore.RED}£{self.cost}{Style.RESET_ALL}")
-		print(f"{Style.BRIGHT}  RENT:        {Fore.GREEN}£{self.rent}{Style.RESET_ALL}\n")
+		print(f"{Style.bold}  PRICE:       {Text.red}£{self.cost}{Style.RESET_ALL}")
+		print(f"{Style.bold}  RENT:        {Text.green}£{self.rent}{Style.RESET_ALL}\n")
 
 def createStations() -> list:
 	kc = Station("King's Cross Station", 5)
@@ -336,14 +336,14 @@ class Utility():
 		self.owner = None
 	
 	def standingInfo(self) -> None:
-		print(f"{Back.WHITE+Style.BRIGHT+Fore.BLACK} You have arrived at: {self.name} {Style.RESET_ALL}")
+		print(f"{Back.white+Style.bold+Text.black} You have arrived at: {self.name} {Style.RESET_ALL}")
 		try: owner = self.owner.letter
 		except AttributeError: owner = "Nobody"
-		print(f"{Back.BLACK} owned by: '{owner}' {Style.RESET_ALL}\n")
+		print(f"{Back.black} owned by: '{owner}' {Style.RESET_ALL}\n")
 
-		print(f"{Style.BRIGHT}  PRICE: {Fore.RED}£{self.cost}{Style.RESET_ALL}")
-		print(f"{Style.BRIGHT}  RENT if 1 utility owned: {Fore.BLUE}4x dice total{Style.RESET_ALL}")
-		print(f"{Style.BRIGHT}  RENT if both utilities owned: {Fore.BLUE}10x dice total{Style.RESET_ALL}\n")
+		print(f"{Style.bold}  PRICE: {Text.red}£{self.cost}{Style.RESET_ALL}")
+		print(f"{Style.bold}  RENT if 1 utility owned: {Text.blue}4x dice total{Style.RESET_ALL}")
+		print(f"{Style.bold}  RENT if both utilities owned: {Text.blue}10x dice total{Style.RESET_ALL}\n")
 
 def createUtilities() -> list:
 	ec = Utility("Electric Company", 12)
@@ -379,7 +379,7 @@ class TaxPlace():
 		self.to_pay = to_pay
 	
 	def standingInfo(self):
-		print(f"Paying {self.tax_type} tax of {Fore.RED}£{self.to_pay}{Fore.RESET}\n")
+		print(f"Paying {self.tax_type} tax of {Text.red}£{self.to_pay}{Text.RESET}\n")
 
 class GoToJail():
 	def __init__(self):
@@ -388,7 +388,7 @@ class GoToJail():
 		self.crimes = ["committing tax fraud", "thinking python is bad", "walking slowly in front of people", "shopping for NFTs", "unironically watching ben shapiro", "не подчиняясь Родине", "caring about elon musk", "using facebook", "simping for FNAF animatronics", "watching dreamSMP", "telling people the wordle answer", "thinking 'oh no our table is broken' is funny", "vacuuming after 1pm on a Sunday", "having a stash of over-the-counter decongestant pills that could be used to make methamphetamine", "doing nothing", "watching tommyinnit", "agreeing with jordan peterson", "ne pas se rendre", "being a man with a podcast", "watching joe rogan", "not being a high-value alpha female", "alienating the worker from the means of production", "hating silco from arcane", "carrying a plank of wood down the street"]
 	
 	def standingInfo(self):
-		print(f"Uh oh! The police found you {Fore.RED+Back.BLACK}{random.choice(self.crimes)}{Style.RESET_ALL}! They have decided to put you in jail!")
+		print(f"Uh oh! The police found you {Text.red+Back.black}{random.choice(self.crimes)}{Style.RESET_ALL}! They have decided to put you in jail!")
 
 class Card():
 	def __init__(self, description: str):
@@ -405,7 +405,7 @@ class Card():
 class goCard(Card):
 	"""card advances you to go and gives £200"""
 	def __init__(self):
-		description = f"Advance to go (Collect {Fore.GREEN}£200{Fore.RESET})"
+		description = f"Advance to go (Collect {Text.green}£200{Text.RESET})"
 		super().__init__(description)
 	
 	def actions(self):
@@ -415,7 +415,7 @@ class goCard(Card):
 class collectCard(Card):
 	"""card gives you a specified amount of money"""
 	def __init__(self, description: str, collect_amount: int):
-		description = f"{description}. Collect {Fore.GREEN}£{collect_amount}{Fore.RESET}"
+		description = f"{description}. Collect {Text.green}£{collect_amount}{Text.RESET}"
 		super().__init__(description)
 		self.collect_amount = collect_amount
 	
@@ -425,7 +425,7 @@ class collectCard(Card):
 class payCard(Card):
 	"""card makes you pay a certain amount"""
 	def __init__(self, description: str, pay_amount: int):
-		description = f"{description}. Pay {Fore.RED}£{pay_amount}{Fore.RESET}\n"
+		description = f"{description}. Pay {Text.red}£{pay_amount}{Text.RESET}\n"
 		super().__init__(description)
 		self.pay_amount = pay_amount
 	
@@ -435,7 +435,7 @@ class payCard(Card):
 class jailCard(Card):
 	"""card sends you to jail"""
 	def __init__(self):
-		super().__init__(f"{Fore.RED} Go to jail. Go directly do jail, do not pass Go, do not collect £200{Fore.RESET}")
+		super().__init__(f"{Text.red} Go to jail. Go directly do jail, do not pass Go, do not collect £200{Text.RESET}")
 	
 	def actions(self):
 		self.player.goToJail()
@@ -443,7 +443,7 @@ class jailCard(Card):
 class collectPlayersCard(Card):
 	"""collect a certain amount of money from players"""
 	def __init__(self, player_list: list, description: str, collect_amount: int):
-		description = f"{description}. Collect {Fore.GREEN}£{collect_amount}{Fore.RESET} from every player"
+		description = f"{description}. Collect {Text.green}£{collect_amount}{Text.RESET} from every player"
 		super().__init__(description)
 		self.player_list = player_list
 		self.collect_amount = collect_amount
@@ -458,9 +458,9 @@ class collectPlayersCard(Card):
 class AdvanceCard(Card):
 	"""advances player to specified place"""
 	def __init__(self, jump_position: int, jump_name: str, collect_go: bool = False):
-		description = f"Advance to {Back.BLACK + Style.BRIGHT+ jump_name + Style.RESET_ALL}"
+		description = f"Advance to {Back.black + Style.bold+ jump_name + Style.RESET_ALL}"
 		if collect_go:
-			description += f". If you pass Go, collect {Fore.GREEN}£200{Fore.RESET}"
+			description += f". If you pass Go, collect {Text.green}£200{Text.RESET}"
 		super().__init__(description)
 		self.jump_position = jump_position
 		self.collect_go = collect_go
@@ -468,7 +468,7 @@ class AdvanceCard(Card):
 	def actions(self) -> None:
 		"""logic for when player gets card"""
 		if self.collect_go and self.player.position > self.jump_position:
-			print(f"\nYou passed go! Collecting {Fore.GREEN}£200{Fore.RESET}")
+			print(f"\nYou passed go! Collecting {Text.green}£200{Text.RESET}")
 			self.player.giveMoney(200, True)
 
 		self.player.position = self.jump_position
@@ -501,7 +501,7 @@ class CommunityChestManager():
 		self.community_chests = community_chests
 	
 	def standingInfo(self):
-		print(f"{Back.LIGHTBLUE_EX+Fore.BLACK+Style.BRIGHT} You landed on a community chest! {Style.RESET_ALL}")
+		print(f"{Back.light_blue+Text.black+Style.bold} You landed on a community chest! {Style.RESET_ALL}")
 	
 	def getChest(self, player: object):
 		chest = random.choice(self.community_chests)
@@ -527,7 +527,7 @@ class ChanceCardManager():
 		self.chance_cards = chance_cards
 
 	def standingInfo(self) -> None:
-		print(f"{Back.LIGHTBLUE_EX+Fore.BLACK+Style.BRIGHT} You landed on a chance card! {Style.RESET_ALL}")
+		print(f"{Back.light_blue+Text.black+Style.bold} You landed on a chance card! {Style.RESET_ALL}")
 
 	def getCard(self, player: Player):
 		card = random.choice(self.chance_cards)
@@ -542,7 +542,7 @@ class BoardDisplayer():
 
 	def getBackColour(self, place) -> str:
 		try: colour = colourTypeToBack(place.colour)
-		except AttributeError: colour = Back.WHITE
+		except AttributeError: colour = Back.white
 
 		return colour
 
@@ -551,9 +551,9 @@ class BoardDisplayer():
 		players_at_pos = [player for player in player_list if player.position == board_index]
 		if len(players_at_pos) == 0: player = " "
 		elif len(players_at_pos) == 1: 
-			player = players_at_pos[0].letter if players_at_pos[0].in_jail == False else Fore.RED + players_at_pos[0].letter
+			player = players_at_pos[0].letter if players_at_pos[0].in_jail == False else Text.red + players_at_pos[0].letter
 		else: player = "#"
-		return Fore.BLACK + player + Fore.RESET
+		return Text.black + player + Text.RESET
 
 	def getSquare(self, board_index: int, player_list: list) -> str:
 		"""returns the board square for the board number"""
@@ -589,11 +589,11 @@ def enterPlayer(player_list, used_characters, player_num = None) -> str:
 		if len(choice) == 1 and choice not in used_characters and choice != "#": 
 			return choice
 		elif len(choice) != 1: 
-			print(Fore.RED + "can only be 1 character long." + Fore.RESET)
+			print(Text.red + "can only be 1 character long." + Text.RESET)
 		elif choice in used_characters: 
-			print(Fore.RED + "letter already used by another player." + Fore.RESET)
+			print(Text.red + "letter already used by another player." + Text.RESET)
 		elif choice == "#":
-			print(Fore.RED + "unavailable character" + Fore.RESET)
+			print(Text.red + "unavailable character" + Text.RESET)
 
 def pickPlayer(player_list) -> int:
 	"""displays a list of players and their letters to choose from. if an invalid choice is sent return None"""
@@ -612,7 +612,7 @@ def createPlayers() -> list:
 
 	while True: # add player menu loop
 		os.system('clear')
-		print(Back.WHITE + Style.BRIGHT + Fore.BLACK + f" {menu_state.upper()} " + Style.RESET_ALL + "\n")
+		print(Back.white + Style.bold + Text.black + f" {menu_state.upper()} " + Style.RESET_ALL + "\n")
 			
 		if menu_state == "main menu":
 			choice = input("[1] Add another player\n[2] Edit a player's letter\n[3] Delete a player\n[4] Finish adding\n\n : ")

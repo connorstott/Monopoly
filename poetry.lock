@@ -6,13 +6,25 @@ category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
+[[package]]
+name = "connorama"
+version = "0.0.3"
+description = "colours for python terminal"
+category = "main"
+optional = false
+python-versions = ">3.0"
+
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "ec33b44996e41c10232c095bb83ca911d08fb04596cd7a3811aa66c84fb49f90"
+content-hash = "aeb444096423277d9dc0f5df40f887c944e34cf025290b7c28d896469bada5d4"
 
 [metadata.files]
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
+]
+connorama = [
+    {file = "connorama-0.0.3-py3-none-any.whl", hash = "sha256:83146afc5cbec9407c538604a4ddd1a35f9efeb3ac45c50c04fb00a761444945"},
+    {file = "connorama-0.0.3.tar.gz", hash = "sha256:d9f7b02b36943e59294c66b92759939e552555e2f8e8cce47336f14a500e2e0f"},
 ]
