@@ -9,7 +9,7 @@ python-versions = ">3.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "aeb444096423277d9dc0f5df40f887c944e34cf025290b7c28d896469bada5d4"
+content-hash = "99a661f8e02fc795c503d1c6aba9b4f864290b6e7fc22cdb7162da2c3f983d91"
 
 [metadata.files]
 connorama = [
